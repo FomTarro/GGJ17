@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class Shooter : MonoBehaviour {
 
-	public float projectileTime;
+	public float furthestDistance = 20f;
 	[SerializeField]
 	public GameObject projectile;
 
@@ -14,7 +14,7 @@ public class Shooter : MonoBehaviour {
 
 	private bool m_isTriggerHeldDown = false;
 	private bool shooting = false;
-	private Vector3 startPoint = new Vector3(0, 1, 2);
+	private Vector3 startPoint = new Vector3(0, 1, 0);
 	private Vector3 currentPoint;
 
 	// Use this for initialization
@@ -41,25 +41,24 @@ public class Shooter : MonoBehaviour {
 		if(shooting) {
 			float x = Input.GetAxis("Horizontal");
 			float y = Input.GetAxis("Vertical");
-			currentPoint += new Vector3(x, 0, y);
-			GenerateArc(currentPoint);
+			GenerateArc(x, y);
 		}
 	}
 
-	void GenerateArc(Vector3 point) {
-		targetSpriteRender.transform.position = currentPoint;
-		// _lineRender.SetPositions(new Vector3[]{
-		// 	new Vector3(),
-		// 	new Vector3()
-		// });
+	void GenerateArc(float x, float y) {
+		float displacement = Vector3.Distance(transform.position, currentPoint + new Vector3(x, 0, y));
+		if(displacement <= furthestDistance) {
+			currentPoint += new Vector3(x, 0, y);
+			targetSpriteRender.transform.position = currentPoint;
+		}
 	}
 
 	void Launch() {
-		float v_x = currentPoint.x / projectileTime;
-		float v_z = currentPoint.z / projectileTime;
-		float v_y = (currentPoint.y + (1/2 * Physics.gravity.y * Mathf.Pow(projectileTime, 2f))) / projectileTime;
+		float v_y = -0.4f * Physics.gravity.y;
 		GameObject newProj = Instantiate(projectile, transform.position + (Vector3.up * 2), Quaternion.identity);
 		Rigidbody rb = newProj.GetComponent<Rigidbody>();
+		float v_x = currentPoint.x;
+		float v_z = currentPoint.z;
 		Vector3 velocity = new Vector3(v_x, v_y, v_z);
 		rb.velocity = velocity;
 		m_isTriggerHeldDown = false;
