@@ -16,7 +16,17 @@ public class NavalMine : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
+        StartCoroutine(Explode(other));
+    }
+
+    IEnumerator Explode(Collider other) {
         Debug.Log("entering...");
+        if(other.tag == "Water" && GetComponent<BoatPhysics>() != null) {
+            Debug.Log("AAA");
+            yield return new WaitForSeconds(3f);
+            Destroy(GetComponent<BoatPhysics>());
+            Destroy(GetComponent<Rigidbody>(), 0.5f);
+        }
         if(other.GetComponent<Rigidbody>() != null)
         {
             foreach(ParticleSystem ps in GetComponentsInChildren<ParticleSystem>())
@@ -35,6 +45,8 @@ public class NavalMine : MonoBehaviour {
             }
 
             Debug.Log("BOOM!");
+            yield return new WaitForSeconds(0.1f);
+            GetComponent<SpawnBehavior>().Deactivate();
         }
     }
 }
