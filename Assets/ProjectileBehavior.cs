@@ -7,6 +7,6 @@ public class ProjectileBehavior : MonoBehaviour {
 	void OnTriggerEnter(Collider other) {
 		if(other.name == "Water")
 			Debug.DrawRay(transform.position, Vector3.up, Color.magenta, 10);
-			Destroy(gameObject);
+			Destroy(gameObject, 10);
 	}
 }

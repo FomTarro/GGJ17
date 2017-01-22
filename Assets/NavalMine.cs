@@ -14,12 +14,16 @@ public class NavalMine : MonoBehaviour {
 		
 	}
 
-    void OnTriggerStay(Collider other)
+    void OnTriggerEnter(Collider other)
     {
         Debug.Log("entering...");
         if(other.GetComponent<Rigidbody>() != null)
         {
-            other.GetComponent<Rigidbody>().AddExplosionForce(40000, transform.position, 50f, 1000f);
+            foreach(ParticleSystem ps in GetComponentsInChildren<ParticleSystem>())
+            {
+                ps.Play();
+            }
+            other.GetComponent<Rigidbody>().AddExplosionForce(60000, transform.position, 10f, 1f,ForceMode.Impulse);
             Debug.Log("BOOM!");
         }
     }
