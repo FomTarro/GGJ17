@@ -48,6 +48,8 @@ public class Spawner : MonoBehaviour {
 			}
 			GameObject item = m_itemPool.Pop();
 			item.transform.position = spawnPos;
+            if(item.GetComponent<Rigidbody>() != null)
+                item.GetComponent<Rigidbody>().velocity = Vector3.zero;
 			item.SetActive(true);
 		}
 	}
