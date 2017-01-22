@@ -29,7 +29,7 @@ public class Spawner : MonoBehaviour {
 		InvokeRepeating("Spawn", 0f, frequency);
 	}
 
-	Vector3 GetRandomPointInMap() {
+	public Vector3 GetRandomPointInMap() {
 		float x = Random.Range(MapBounds.min.x, MapBounds.max.x);
 		float z = Random.Range(MapBounds.min.z, MapBounds.max.z);
 		return new Vector3(x, spawnHeight, z);
@@ -38,7 +38,7 @@ public class Spawner : MonoBehaviour {
 	void Spawn() {
 		if(m_itemPool.Count > 0) {
 			Vector3 spawnPos = GetRandomPointInMap();
-			while(Physics.CheckSphere(spawnPos, ItemBounds.size.magnitude)) {
+			while(Physics.CheckSphere(spawnPos, ItemBounds.size.magnitude, LayerMask.NameToLayer("MineLayer"))) {
 				spawnPos = GetRandomPointInMap();
 			}
 			GameObject item = m_itemPool.Pop();

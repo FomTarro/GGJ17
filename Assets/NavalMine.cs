@@ -16,6 +16,10 @@ public class NavalMine : MonoBehaviour {
 
     void OnTriggerEnter(Collider other)
     {
+        StartCoroutine(Explode(other));
+    }
+
+    IEnumerator Explode(Collider other) {
         Debug.Log("entering...");
         if(other.GetComponent<Rigidbody>() != null)
         {
@@ -25,6 +29,8 @@ public class NavalMine : MonoBehaviour {
             }
             other.GetComponent<Rigidbody>().AddExplosionForce(60000, transform.position, 10f, 1f,ForceMode.Impulse);
             Debug.Log("BOOM!");
+            yield return new WaitForSeconds(0.1f);
+            GetComponent<SpawnBehavior>().Deactivate();
         }
     }
 }
