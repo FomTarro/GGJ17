@@ -13,4 +13,13 @@ public class GarbageCollector : MonoBehaviour {
 	void Update () {
 		
 	}
+
+    void OnTriggerEnter(Collider other)
+    {
+        SpawnBehavior sb = other.GetComponent<SpawnBehavior>();
+        if (sb)
+        {
+            sb.Invoke("Deactivate", 1);
+        }
+    }
 }

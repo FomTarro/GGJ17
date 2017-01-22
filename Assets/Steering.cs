@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Player))]
 public class Steering : MonoBehaviour {
 
     Rigidbody _rigidbody;
@@ -10,18 +11,22 @@ public class Steering : MonoBehaviour {
 
     public float _speed = 2;
 
+    private int _playerIndex;
+
+
 	// Use this for initialization
 	void Start () {
+        _playerIndex = GetComponent<Player>().PlayerIndex;
         _rigidbody = GetComponent<Rigidbody>();	
 	}
 
     // Update is called once per frame
     void Update()
     {
-        float x = Input.GetAxis("Horizontal");
-        float y = -Input.GetAxis("Vertical");
+        float x = Input.GetAxis("p"+_playerIndex+"_Horizontal");
+        float y = -Input.GetAxis("p" + _playerIndex + "_Vertical");
 
-        if (Input.GetAxisRaw("RightTrigger") < 0.1f)
+        if (Input.GetAxisRaw("p" + _playerIndex + "_Trigger") < 0.1f)
         {
             float angle = 0.0f;
             if (x != 0.0f || y != 0.0f)

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Player))]
 public class Shooter : MonoBehaviour {
 
 	public float furthestDistance = 20f;
@@ -23,9 +24,12 @@ public class Shooter : MonoBehaviour {
     [SerializeField]
     ParticleSystem _fireBurst;
 
+    int _playerIndex;
+
 	// Use this for initialization
 	void Start () {
-		_lineRender = GetComponent<LineRenderer>();
+        _playerIndex = GetComponent<Player>().PlayerIndex;
+        _lineRender = GetComponent<LineRenderer>();
 		currentPoint = startPoint;
         targetSpriteRender.SetActive(false);
     }
@@ -39,7 +43,7 @@ public class Shooter : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-		if(Input.GetAxisRaw("RightTrigger") != 0) {
+		if(Input.GetAxisRaw("p" + _playerIndex + "_Trigger") != 0) {
 			if(!m_isTriggerHeldDown) {
 				m_isTriggerHeldDown = true;
 				shooting = true;
@@ -48,13 +52,13 @@ public class Shooter : MonoBehaviour {
 			}
 			
 		}
-		if (Input.GetAxisRaw("RightTrigger") == 0) {
+		if (Input.GetAxisRaw("p" + _playerIndex + "_Trigger") == 0) {
 			if(m_isTriggerHeldDown)
 				Launch();
 		}
 		if(shooting) {
-			float x = Input.GetAxis("Horizontal");
-			float y = Input.GetAxis("Vertical");
+			float x = Input.GetAxis("p"+_playerIndex+"_Horizontal");
+			float y = Input.GetAxis("p" + _playerIndex + "_Vertical");
 			GenerateArc(y, -x);
 		}
 	}

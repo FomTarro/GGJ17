@@ -47,6 +47,10 @@ public class NavalMine : MonoBehaviour {
 
 
             }
+            if (other.tag.Equals("Ship") && other.GetComponent<Player>() != null)
+            {
+                other.GetComponent<Player>().TakeDamage();
+            }
 
             Debug.Log("BOOM!");
             this.GetComponent<Collider>().enabled = false;
