@@ -6,6 +6,8 @@ public class NavalMine : MonoBehaviour {
 
     public WaterCollisions _waterCollisions;
 
+    public GameObject _explosionParticles;
+
 
     // Use this for initialization
     void Start () {
@@ -23,10 +25,13 @@ public class NavalMine : MonoBehaviour {
         if (other.GetComponent<Rigidbody>() != null)
         {
             _waterCollisions.ActivateImpact(new Vector3(other.transform.position.x, 0, transform.position.z), 1.5f);
-            foreach (ParticleSystem ps in GetComponentsInChildren<ParticleSystem>())
+            GameObject explosion = Instantiate(_explosionParticles);
+            explosion.transform.position = transform.position;
+            foreach (ParticleSystem ps in explosion.GetComponentsInChildren<ParticleSystem>())
             {
                 ps.Play();
             }
+            Destroy(explosion, 1);
 
             Collider[] hitColliders = Physics.OverlapSphere(other.transform.position, 10);
             foreach (Collider c in hitColliders)
@@ -35,6 +40,11 @@ public class NavalMine : MonoBehaviour {
                 {
                     c.GetComponent<Rigidbody>().AddExplosionForce(60000, other.transform.position, 10f, 1f, ForceMode.Impulse);
                 }
+                else if (c.gameObject.tag.Equals("Mine"))
+                {
+                    c.GetComponent<Rigidbody>().AddExplosionForce(10000, other.transform.position, 10f, 1f, ForceMode.Impulse);
+                }
+
 
             }
 
