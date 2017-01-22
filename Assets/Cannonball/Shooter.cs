@@ -32,7 +32,9 @@ public class Shooter : MonoBehaviour {
 	
     void LateUpdate()
     {
-        _cannon.transform.eulerAngles = new Vector3(90, 0, 0);
+
+        Vector3 target = new Vector3(targetSpriteRender.transform.position.x, _cannon.transform.position.y, targetSpriteRender.transform.position.z);
+        _cannon.transform.LookAt(target);
     }
 
 	// Update is called once per frame
@@ -68,20 +70,20 @@ public class Shooter : MonoBehaviour {
 
 	void Launch() {
 
-        GameObject newProj = Instantiate(projectile, transform.position + (Vector3.up * 2), Quaternion.identity);
+        GameObject newProj = Instantiate(projectile, transform.position, Quaternion.identity);
         Rigidbody rb = newProj.GetComponent<Rigidbody>();
 
         /*
 		float v_y = -0.4f * Physics.gravity.y;
-        //_fireBurst.Play();
 		float v_x = currentPoint.x;
 		float v_z = currentPoint.z;
 		Vector3 velocity = new Vector3(v_x, v_y, v_z);
         //rb.velocity = velocity;
         */
 
-        rb.velocity = CalculateTrajectory(targetSpriteRender.transform, 35f);
-		m_isTriggerHeldDown = false;
+        rb.velocity = CalculateTrajectory(targetSpriteRender.transform, 30f);
+        _fireBurst.Play();
+        m_isTriggerHeldDown = false;
 		shooting = false;
 		targetSpriteRender.SetActive(false);
 

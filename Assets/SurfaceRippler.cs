@@ -40,6 +40,10 @@ public class SurfaceRippler : MonoBehaviour {
                 {
                     c.GetComponent<Rigidbody>().AddExplosionForce(35000, other.transform.position, 10f, 5f, ForceMode.Impulse);
                 }
+                else if(c.gameObject.tag.Equals("Mine"))
+                {
+                    c.GetComponent<Rigidbody>().AddExplosionForce(3500, other.transform.position, 10f, 1f, ForceMode.Impulse);
+                }
 
             }
         }
