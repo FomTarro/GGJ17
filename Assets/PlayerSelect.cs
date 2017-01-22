@@ -23,11 +23,17 @@ public class PlayerSelect : MonoBehaviour {
 	[SerializeField]
 	public Color selectedColor;
 
+	[SerializeField]
+	GameObject HealthBar;
+
+	[SerializeField]
+	GameObject StartPrompt;
+
 	private int currentFlag = 0;
 
 	private bool lockedIn = false;
 
-	private PlayerSelectList flagCheckList;
+	private PlayerSelectList playerSelectList;
 
 	private bool m_isTriggerHeldDown = false;
 
@@ -38,7 +44,7 @@ public class PlayerSelect : MonoBehaviour {
 		playerId = transform.GetSiblingIndex();
 		flagBackground.sprite = flags[currentFlag];
 		playerImage.sprite = playerSprites[playerId];
-		flagCheckList = FindObjectOfType<PlayerSelectList>();
+		playerSelectList = FindObjectOfType<PlayerSelectList>();
 	}
 	
 	// Update is called once per frame
@@ -59,26 +65,26 @@ public class PlayerSelect : MonoBehaviour {
 				} else {
 					playerImage.color = Color.white;
 				}
-				if(!flagCheckList.CheckFlag(color, playerId))
+				if(!playerSelectList.CheckFlag(color, playerId))
 					flagBackground.color = selectedColor;
 				else
 					flagBackground.color = unselectedColor;
 			}
-		}
-			
-		if(Input.GetAxisRaw("p" + playerId + "_Trigger") != 0) {
-			if(!m_isTriggerHeldDown) {
-				m_isTriggerHeldDown = true;
-				string color = flags[currentFlag].name.Split('_')[1];
-				if(flagCheckList.SelectFlag(color, playerId)) {
-					lockedIn = !lockedIn;
-					flagBackground.gameObject.GetComponent<Outline>().enabled = lockedIn;
+			if(Input.GetAxisRaw("p" + playerId + "_Trigger") != 0) {
+				if(!m_isTriggerHeldDown) {
+					m_isTriggerHeldDown = true;
+					string color = flags[currentFlag].name.Split('_')[1];
+					if(playerSelectList.SelectFlag(color, playerId)) {
+						lockedIn = true;
+						flagBackground.gameObject.GetComponent<Outline>().enabled = true;
+						SpawnPlayer();
+					}
 				}
 			}
-		}
-		if (Input.GetAxisRaw("p" + playerId + "_Trigger") == 0) {
-			if(m_isTriggerHeldDown)
-				m_isTriggerHeldDown = false;
+			if (Input.GetAxisRaw("p" + playerId + "_Trigger") == 0) {
+				if(m_isTriggerHeldDown)
+					m_isTriggerHeldDown = false;
+			}
 		}
 	}
 
@@ -96,5 +102,17 @@ public class PlayerSelect : MonoBehaviour {
 		string color = flags[currentFlag].name.Split('_')[1];
 		if(color == info.color) 
 			flagBackground.color = unselectedColor;
+	}
+
+	void SpawnPlayer() {
+		Spawner spawner = playerSelectList.GetComponent<Spawner>();
+		GameObject spawnedBoat = spawner.Spawn();
+		Player player = spawnedBoat.GetComponent<Player>();
+		player._playerNumber = playerId;
+		//ASSIGN FLAG HERE
+		player._materialMesh.GetComponent<SkinnedMeshRenderer>().materials[1].mainTexture = 
+			playerSelectList.FlagTextures[currentFlag];
+		HealthBar.SetActive(true);
+		StartPrompt.SetActive(false);
 	}
 }

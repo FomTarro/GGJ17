@@ -5,6 +5,7 @@ using UnityEngine;
 public class Spawner : MonoBehaviour {
 
 	public int maxAvailable;
+	public bool spawnAtInterval;
 	public float frequency;
 	public float spawnHeight;
 	[SerializeField]
@@ -35,7 +36,7 @@ public class Spawner : MonoBehaviour {
 		return new Vector3(x, spawnHeight, z);
 	}
 
-	void Spawn() {
+	public GameObject Spawn() {
         //Debug.Log(m_itemPool.Count);
         if (m_itemPool.Count > 0) { 
 			Vector3 spawnPos = GetRandomPointInMap();
@@ -51,7 +52,9 @@ public class Spawner : MonoBehaviour {
             if(item.GetComponent<Rigidbody>() != null)
                 item.GetComponent<Rigidbody>().velocity = Vector3.zero;
 			item.SetActive(true);
+			return item;
 		}
+		return null;
 	}
 
 	public void ReturnToPool(GameObject item) {
