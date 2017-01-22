@@ -18,7 +18,6 @@ public class WaterCollisions : MonoBehaviour
     {
         collisions = new Vector4[arraySize];
         rend = GetComponent<Renderer>();
-
     }
 
     // Update is called once per frame

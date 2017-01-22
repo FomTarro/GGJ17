@@ -9,19 +9,26 @@ public class Shooter : MonoBehaviour {
 	public GameObject projectile;
 
 	[SerializeField]
-	SpriteRenderer targetSpriteRender;
+	GameObject targetSpriteRender;
 	LineRenderer _lineRender;
 
 	private bool m_isTriggerHeldDown = false;
 	private bool shooting = false;
-	private Vector3 startPoint = new Vector3(0, 1, 0);
+	private Vector3 startPoint = new Vector3(0, 2, 0);
 	private Vector3 currentPoint;
+
+    [SerializeField]
+    GameObject _cannon;
+
+    [SerializeField]
+    ParticleSystem _fireBurst;
 
 	// Use this for initialization
 	void Start () {
 		_lineRender = GetComponent<LineRenderer>();
 		currentPoint = startPoint;
-	}
+        targetSpriteRender.SetActive(false);
+    }
 	
 	// Update is called once per frame
 	void FixedUpdate () {
@@ -29,8 +36,8 @@ public class Shooter : MonoBehaviour {
 			if(!m_isTriggerHeldDown) {
 				m_isTriggerHeldDown = true;
 				shooting = true;
-				targetSpriteRender.enabled = true;
-				//currentPoint = startPoint; uncomment if the shoot location needs to be reset after each trigger press
+				targetSpriteRender.SetActive(true);
+				currentPoint = transform.position; //uncomment if the shoot location needs to be reset after each trigger press
 			}
 			
 		}
@@ -41,7 +48,7 @@ public class Shooter : MonoBehaviour {
 		if(shooting) {
 			float x = Input.GetAxis("Horizontal");
 			float y = Input.GetAxis("Vertical");
-			GenerateArc(x, y);
+			GenerateArc(y, -x);
 		}
 	}
 
@@ -51,18 +58,37 @@ public class Shooter : MonoBehaviour {
 			currentPoint += new Vector3(x, 0, y);
 			targetSpriteRender.transform.position = currentPoint;
 		}
+        //_cannon.transform.eulerAngles = new Vector3(90, 0, 0);
 	}
 
 	void Launch() {
 		float v_y = -0.4f * Physics.gravity.y;
+        //_fireBurst.Play();
 		GameObject newProj = Instantiate(projectile, transform.position + (Vector3.up * 2), Quaternion.identity);
 		Rigidbody rb = newProj.GetComponent<Rigidbody>();
 		float v_x = currentPoint.x;
 		float v_z = currentPoint.z;
 		Vector3 velocity = new Vector3(v_x, v_y, v_z);
-		rb.velocity = velocity;
+        //rb.velocity = velocity;
+
+        rb.velocity = CalculateTrajectory(targetSpriteRender.transform, 35f);
 		m_isTriggerHeldDown = false;
 		shooting = false;
-		targetSpriteRender.enabled = false;
+		targetSpriteRender.SetActive(false);
+
 	}
+
+    Vector3 CalculateTrajectory(Transform target, float angle)
+    {
+        var dir = target.position - transform.position;  // get target direction
+        var h = dir.y;  // get height difference
+        dir.y = 0;  // retain only the horizontal direction
+        var dist = dir.magnitude;  // get horizontal distance
+        var a = angle * Mathf.Deg2Rad;  // convert angle to radians
+        dir.y = dist * Mathf.Tan(a);  // set dir to the elevation angle
+        dist += h / Mathf.Tan(a);  // correct for small height differences
+                                   // calculate the velocity magnitude
+        var vel = Mathf.Sqrt(dist * Physics.gravity.magnitude / Mathf.Sin(2 * a));
+        return vel * dir.normalized;
+    }
 }
