@@ -7,6 +7,12 @@ public class PlayerSelectList : MonoBehaviour {
 	[SerializeField]
 	public string[] FlagColors;
 
+	[SerializeField]
+	public Texture[] FlagTextures;
+
+	[SerializeField]
+	public GameObject shipReference;
+
 	private Dictionary<string, int> flagDictionary;
 
 	// Use this for initialization

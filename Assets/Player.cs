@@ -11,7 +11,7 @@ public class Player : MonoBehaviour {
     int _health = 3;
 
     [SerializeField]
-    int _playerNumber = 0;
+    public int _playerNumber = 0;
     public int PlayerIndex
     {
         get { return _playerNumber; }
