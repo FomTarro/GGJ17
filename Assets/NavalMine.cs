@@ -24,9 +24,10 @@ public class NavalMine : MonoBehaviour {
     {
         if (other.GetComponent<Rigidbody>() != null)
         {
-            _waterCollisions.ActivateImpact(new Vector3(other.transform.position.x, 0, transform.position.z), 1.5f);
+            _waterCollisions.ActivateImpact(new Vector3(other.transform.position.x, 0, transform.position.z), 2f);
             GameObject explosion = Instantiate(_explosionParticles);
             explosion.transform.position = transform.position;
+            explosion.transform.localScale = Vector3.one * 2;
             foreach (ParticleSystem ps in explosion.GetComponentsInChildren<ParticleSystem>())
             {
                 ps.Play();
@@ -38,7 +39,7 @@ public class NavalMine : MonoBehaviour {
             {
                 if (c.gameObject.tag.Equals("Ship"))
                 {
-                    c.GetComponent<Rigidbody>().AddExplosionForce(60000, other.transform.position, 10f, 1f, ForceMode.Impulse);
+                    c.GetComponent<Rigidbody>().AddExplosionForce(65000, other.transform.position, 13f, 1f, ForceMode.Impulse);
                 }
                 else if (c.gameObject.tag.Equals("Mine"))
                 {
@@ -46,6 +47,10 @@ public class NavalMine : MonoBehaviour {
                 }
 
 
+            }
+            if (other.tag.Equals("Ship") && other.GetComponent<Player>() != null)
+            {
+                other.GetComponent<Player>().TakeDamage();
             }
 
             Debug.Log("BOOM!");

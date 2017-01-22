@@ -17,7 +17,7 @@ public class Spawner : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-		MapBounds = mapReference.GetComponent<Renderer>().bounds;
+		MapBounds = mapReference.GetComponent<Collider>().bounds;
 		ItemBounds = itemReference.GetComponentInChildren<Renderer>().bounds;
 		m_itemPool = new Stack<GameObject>();
 		for(int i = 0; i < maxAvailable; i++) {
@@ -36,11 +36,11 @@ public class Spawner : MonoBehaviour {
 	}
 
 	void Spawn() {
-        Debug.Log(m_itemPool.Count);
+        //Debug.Log(m_itemPool.Count);
         if (m_itemPool.Count > 0) { 
 			Vector3 spawnPos = GetRandomPointInMap();
 			Vector3 checkPos = new Vector3(spawnPos.x, 0, spawnPos.z);
-			while(Physics.CheckSphere(checkPos, ItemBounds.size.magnitude * 5,
+			while(Physics.CheckSphere(checkPos, ItemBounds.size.magnitude * 8,
 				(1 << LayerMask.NameToLayer("MineLayer")) |
 				(1 << LayerMask.NameToLayer("PlayerLayer")))) {
 				spawnPos = GetRandomPointInMap();
