@@ -36,7 +36,7 @@ public class Spawner : MonoBehaviour {
 	}
 
 	void Spawn() {
-        Debug.Log(m_itemPool.Count);
+        //Debug.Log(m_itemPool.Count);
         if (m_itemPool.Count > 0) { 
 			Vector3 spawnPos = GetRandomPointInMap();
 			Vector3 checkPos = new Vector3(spawnPos.x, 0, spawnPos.z);
