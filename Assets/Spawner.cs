@@ -39,8 +39,12 @@ public class Spawner : MonoBehaviour {
         Debug.Log(m_itemPool.Count);
         if (m_itemPool.Count > 0) { 
 			Vector3 spawnPos = GetRandomPointInMap();
-			while(Physics.CheckSphere(spawnPos, ItemBounds.size.magnitude, LayerMask.NameToLayer("MineLayer"))) {
+			Vector3 checkPos = new Vector3(spawnPos.x, 0, spawnPos.z);
+			while(Physics.CheckSphere(checkPos, ItemBounds.size.magnitude * 5,
+				(1 << LayerMask.NameToLayer("MineLayer")) |
+				(1 << LayerMask.NameToLayer("PlayerLayer")))) {
 				spawnPos = GetRandomPointInMap();
+				checkPos = new Vector3(spawnPos.x, 0, spawnPos.z);
 			}
 			GameObject item = m_itemPool.Pop();
 			item.transform.position = spawnPos;
