@@ -4,32 +4,26 @@ using UnityEngine;
 
 public class NavalMine : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
+    public WaterCollisions _waterCollisions;
+
+
+    // Use this for initialization
+    void Start () {
+        _waterCollisions = FindObjectOfType<WaterCollisions>();
 	}
-	
-	// Update is called once per frame
-	void Update () {
-		
-	}
+
+    void OnEnable()
+    {
+        this.GetComponent<Collider>().enabled = true;
+        this.GetComponentInChildren<SkinnedMeshRenderer>().enabled = true;
+    }
 
     void OnTriggerEnter(Collider other)
     {
-        StartCoroutine(Explode(other));
-    }
-
-    IEnumerator Explode(Collider other) {
-        Debug.Log("entering...");
-        if(other.tag == "Water" && GetComponent<BoatPhysics>() != null) {
-            Debug.Log("AAA");
-            yield return new WaitForSeconds(3f);
-            Destroy(GetComponent<BoatPhysics>());
-            Destroy(GetComponent<Rigidbody>(), 0.5f);
-        }
-        if(other.GetComponent<Rigidbody>() != null)
+        if (other.GetComponent<Rigidbody>() != null)
         {
-            foreach(ParticleSystem ps in GetComponentsInChildren<ParticleSystem>())
+            _waterCollisions.ActivateImpact(new Vector3(other.transform.position.x, 0, transform.position.z), 1.5f);
+            foreach (ParticleSystem ps in GetComponentsInChildren<ParticleSystem>())
             {
                 ps.Play();
             }
@@ -45,8 +39,14 @@ public class NavalMine : MonoBehaviour {
             }
 
             Debug.Log("BOOM!");
-            yield return new WaitForSeconds(0.1f);
-            GetComponent<SpawnBehavior>().Deactivate();
+            this.GetComponent<Collider>().enabled = false;
+            this.GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
+            //Destroy(this.gameObject, 1);
+            SpawnBehavior sb = GetComponent<SpawnBehavior>();
+            if(sb)
+            {
+                sb.Invoke("Deactivate", 1);
+            }
         }
     }
 }

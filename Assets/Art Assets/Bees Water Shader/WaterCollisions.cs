@@ -24,21 +24,19 @@ public class WaterCollisions : MonoBehaviour {
             }
         }
 	}
-
-    //on collisions, get the location of the collision and send it to ActivateImpact
     /*
-    void OnCollision(Collision collision)
+    //on collisions, get the location of the collision and send it to ActivateImpact
+    void OnTriggerEnter (Collider other)
     {
+        float force = 1;
 
-        ContactPoint contact = collision.contacts[0];
-        ActivateImpact(contact.point);
-
+        Vector3 contact = other.gameObject.transform.position;
+        ActivateImpact(contact, force);
     }
     */
 
-
     //sends the shader impact data
-    public void ActivateImpact(Vector3 contact) { 
+    public void ActivateImpact(Vector3 contact, float force) { 
         float j = 1f;
         int emptyCollision = 0;
 
@@ -53,6 +51,7 @@ public class WaterCollisions : MonoBehaviour {
             }
         }
         collisions[emptyCollision] = new Vector4(contact.x, contact.y, contact.z, 1);
+        rend.material.SetFloat("_ImpactForce" + (emptyCollision + 1), force);
     }
 
 }

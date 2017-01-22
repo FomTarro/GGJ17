@@ -36,7 +36,8 @@ public class Spawner : MonoBehaviour {
 	}
 
 	void Spawn() {
-		if(m_itemPool.Count > 0) {
+        Debug.Log(m_itemPool.Count);
+        if (m_itemPool.Count > 0) { 
 			Vector3 spawnPos = GetRandomPointInMap();
 			while(Physics.CheckSphere(spawnPos, ItemBounds.size.magnitude, LayerMask.NameToLayer("MineLayer"))) {
 				spawnPos = GetRandomPointInMap();

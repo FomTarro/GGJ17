@@ -27,7 +27,7 @@ public class SurfaceRippler : MonoBehaviour {
             Collider[] hitColliders = Physics.OverlapSphere(other.transform.position, 10);
             GameObject splash = Instantiate(_impactPrefab);
             splash.transform.position = other.transform.position + new Vector3(0, 2f, 0);
-            _waterCollisions.ActivateImpact(new Vector3(other.transform.position.x, 0, other.transform.position.z));
+            _waterCollisions.ActivateImpact(new Vector3(other.transform.position.x, 0, other.transform.position.z), 1f);
             splash.transform.eulerAngles = new Vector3(0, 0, 0);
             Destroy(splash, 3);
             foreach(ParticleSystem ps in splash.GetComponentsInChildren<ParticleSystem>())
