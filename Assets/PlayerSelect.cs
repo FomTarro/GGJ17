@@ -31,6 +31,8 @@ public class PlayerSelect : MonoBehaviour {
 
 	private bool m_isTriggerHeldDown = false;
 
+	float lastStep, timeBetweenSteps = 0.1f;
+
 	void Start () {
 		//Figure out which player/child you are
 		playerId = transform.GetSiblingIndex();
@@ -43,23 +45,30 @@ public class PlayerSelect : MonoBehaviour {
 	void Update () {
 		if(!lockedIn) {
 			float vertical = Input.GetAxisRaw("p" + playerId + "_Vertical");
-			if(vertical > 0) {
-				currentFlag = (currentFlag + 1) % flags.Length;
-			} else if (vertical < 0) {
-				currentFlag = (currentFlag + (flags.Length - 1)) % flags.Length;
+			if(Time.time - lastStep > timeBetweenSteps){
+				lastStep = Time.time;
+				if(vertical > 0) {
+					currentFlag = (currentFlag + 1) % flags.Length;
+				} else if (vertical < 0) {
+					currentFlag = (currentFlag + (flags.Length - 1)) % flags.Length;
+				}
+				flagBackground.sprite = flags[currentFlag];
+				string color = flags[currentFlag].name.Split('_')[1];
+				if(color == "White") {
+					playerImage.color = Color.black;
+				} else {
+					playerImage.color = Color.white;
+				}
+				if(!flagCheckList.CheckFlag(color, playerId))
+					flagBackground.color = selectedColor;
+				else
+					flagBackground.color = unselectedColor;
 			}
-			flagBackground.sprite = flags[currentFlag];
-			string color = flags[currentFlag].name.Split('_')[1];
-			if(flagCheckList.CheckFlag(flags[currentFlag].name, playerId))
-				flagBackground.color = selectedColor;
-			else
-				flagBackground.color = unselectedColor;
 		}
 			
 		if(Input.GetAxisRaw("p" + playerId + "_Trigger") != 0) {
 			if(!m_isTriggerHeldDown) {
 				m_isTriggerHeldDown = true;
-				Debug.Log("AAA");
 				string color = flags[currentFlag].name.Split('_')[1];
 				if(flagCheckList.SelectFlag(color, playerId)) {
 					lockedIn = !lockedIn;
@@ -71,5 +80,21 @@ public class PlayerSelect : MonoBehaviour {
 			if(m_isTriggerHeldDown)
 				m_isTriggerHeldDown = false;
 		}
+	}
+
+	public void UpdateFlagSelect(SelectInfo info) {
+		if(info.id == playerId)
+			return;
+		string color = flags[currentFlag].name.Split('_')[1];
+		if(color == info.color) 
+			flagBackground.color = selectedColor;
+	}
+
+	public void UpdateFlagUnSelect(SelectInfo info) {
+		if(info.id == playerId)
+			return;
+		string color = flags[currentFlag].name.Split('_')[1];
+		if(color == info.color) 
+			flagBackground.color = unselectedColor;
 	}
 }
