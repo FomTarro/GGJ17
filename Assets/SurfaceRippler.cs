@@ -7,6 +7,8 @@ public class SurfaceRippler : MonoBehaviour {
     [SerializeField]
     GameObject _impactPrefab;
 
+    public WaterCollisions _waterCollisions;
+
 	// Use this for initialization
 	void Start () {
 		
@@ -24,8 +26,10 @@ public class SurfaceRippler : MonoBehaviour {
             Debug.Log("Cannonball in the water!");
             Collider[] hitColliders = Physics.OverlapSphere(other.transform.position, 10);
             GameObject splash = Instantiate(_impactPrefab);
-            splash.transform.position = other.transform.position + new Vector3(0, -0.5f, 0);
+            splash.transform.position = other.transform.position + new Vector3(0, 2f, 0);
+            _waterCollisions.ActivateImpact(new Vector3(other.transform.position.x, 0, other.transform.position.z));
             splash.transform.eulerAngles = new Vector3(0, 0, 0);
+            Destroy(splash, 3);
             foreach(ParticleSystem ps in splash.GetComponentsInChildren<ParticleSystem>())
             {
                 ps.Play();
@@ -34,7 +38,7 @@ public class SurfaceRippler : MonoBehaviour {
             {
                 if (c.gameObject.tag.Equals("Ship"))
                 {
-                    c.GetComponent<Rigidbody>().AddExplosionForce(30000, other.transform.position, 10f, 5f, ForceMode.Impulse);
+                    c.GetComponent<Rigidbody>().AddExplosionForce(35000, other.transform.position, 10f, 5f, ForceMode.Impulse);
                 }
 
             }

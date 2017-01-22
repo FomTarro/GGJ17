@@ -23,7 +23,17 @@ public class NavalMine : MonoBehaviour {
             {
                 ps.Play();
             }
-            other.GetComponent<Rigidbody>().AddExplosionForce(60000, transform.position, 10f, 1f,ForceMode.Impulse);
+
+            Collider[] hitColliders = Physics.OverlapSphere(other.transform.position, 10);
+            foreach (Collider c in hitColliders)
+            {
+                if (c.gameObject.tag.Equals("Ship"))
+                {
+                    c.GetComponent<Rigidbody>().AddExplosionForce(60000, other.transform.position, 10f, 1f, ForceMode.Impulse);
+                }
+
+            }
+
             Debug.Log("BOOM!");
         }
     }

@@ -30,6 +30,11 @@ public class Shooter : MonoBehaviour {
         targetSpriteRender.SetActive(false);
     }
 	
+    void LateUpdate()
+    {
+        _cannon.transform.eulerAngles = new Vector3(90, 0, 0);
+    }
+
 	// Update is called once per frame
 	void FixedUpdate () {
 		if(Input.GetAxisRaw("RightTrigger") != 0) {
@@ -56,20 +61,24 @@ public class Shooter : MonoBehaviour {
 		float displacement = Vector3.Distance(transform.position, currentPoint + new Vector3(x, 0, y));
 		if(displacement <= furthestDistance) {
 			currentPoint += new Vector3(x, 0, y);
-			targetSpriteRender.transform.position = currentPoint;
+			targetSpriteRender.transform.position = new Vector3(currentPoint.x, 0, currentPoint.z);
 		}
         //_cannon.transform.eulerAngles = new Vector3(90, 0, 0);
 	}
 
 	void Launch() {
+
+        GameObject newProj = Instantiate(projectile, transform.position + (Vector3.up * 2), Quaternion.identity);
+        Rigidbody rb = newProj.GetComponent<Rigidbody>();
+
+        /*
 		float v_y = -0.4f * Physics.gravity.y;
         //_fireBurst.Play();
-		GameObject newProj = Instantiate(projectile, transform.position + (Vector3.up * 2), Quaternion.identity);
-		Rigidbody rb = newProj.GetComponent<Rigidbody>();
 		float v_x = currentPoint.x;
 		float v_z = currentPoint.z;
 		Vector3 velocity = new Vector3(v_x, v_y, v_z);
         //rb.velocity = velocity;
+        */
 
         rb.velocity = CalculateTrajectory(targetSpriteRender.transform, 35f);
 		m_isTriggerHeldDown = false;
