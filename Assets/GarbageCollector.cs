@@ -19,7 +19,11 @@ public class GarbageCollector : MonoBehaviour {
         SpawnBehavior sb = other.GetComponent<SpawnBehavior>();
         if (sb)
         {
-            sb.Invoke("Deactivate", 1);
+            sb.Invoke("Deactivate", 0);
+        }
+        if(other.gameObject.GetComponent<Player>() != null)
+        {
+            other.gameObject.GetComponent<Player>().TakeDamage(3);
         }
     }
 }

@@ -27,7 +27,8 @@ public class Spawner : MonoBehaviour {
 			sb.Spawner = this;
 			ReturnToPool(item);	
 		}
-		InvokeRepeating("Spawn", 0f, frequency);
+        if(spawnAtInterval)
+		    InvokeRepeating("Spawn", 0f, frequency);
 	}
 
 	public Vector3 GetRandomPointInMap() {

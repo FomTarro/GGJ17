@@ -74,6 +74,7 @@ public class Shooter : MonoBehaviour {
 	void Launch() {
 
         GameObject newProj = Instantiate(projectile, transform.position, Quaternion.identity);
+        newProj.GetComponent<ProjectileBehavior>()._fromPlayer = _playerIndex;
         Rigidbody rb = newProj.GetComponent<Rigidbody>();
 
         /*

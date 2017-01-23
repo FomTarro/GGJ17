@@ -39,6 +39,7 @@ public class NavalMine : MonoBehaviour {
             {
                 if (c.gameObject.tag.Equals("Ship"))
                 {
+                    other.GetComponent<Player>().TakeDamage(1);
                     c.GetComponent<Rigidbody>().AddExplosionForce(65000, other.transform.position, 13f, 1f, ForceMode.Impulse);
                 }
                 else if (c.gameObject.tag.Equals("Mine"))
@@ -50,7 +51,7 @@ public class NavalMine : MonoBehaviour {
             }
             if (other.tag.Equals("Ship") && other.GetComponent<Player>() != null)
             {
-                other.GetComponent<Player>().TakeDamage();
+                other.GetComponent<Player>().TakeDamage(1);
             }
 
             Debug.Log("BOOM!");
@@ -60,7 +61,7 @@ public class NavalMine : MonoBehaviour {
             SpawnBehavior sb = GetComponent<SpawnBehavior>();
             if(sb)
             {
-                sb.Invoke("Deactivate", 1);
+                sb.Invoke("Deactivate", 0);
             }
         }
     }

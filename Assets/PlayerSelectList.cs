@@ -22,9 +22,15 @@ public class PlayerSelectList : MonoBehaviour {
 			flagDictionary.Add(color, -100);
 		}
 	}
-	
-	/// Returns true if flag is selected by player
-	public bool CheckFlag(string color, int playerId) {
+
+    void Update()
+    {
+        if(Input.GetKeyDown(KeyCode.Space))
+            PlayerPrefs.DeleteAll();
+    }
+
+    /// Returns true if flag is selected by player
+    public bool CheckFlag(string color, int playerId) {
 		int player;
 		flagDictionary.TryGetValue(color, out player);
 		return (playerId == player) || (player == -100);

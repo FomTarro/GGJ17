@@ -21,6 +21,10 @@ public class Player : MonoBehaviour {
 
     [SerializeField]
     public GameObject _materialMesh;
+    [SerializeField]
+    public GameObject _shotMarker;
+
+    public PlayerSelect _playerUI;
 
 	// Use this for initialization
 	void Awake () {
@@ -51,13 +55,23 @@ public class Player : MonoBehaviour {
 		
 	}
 
-    public void TakeDamage()
+
+    public void TakeDamage(int damage)
     {
-        _health--;
+        _health = _health - damage;
+        Debug.Log("Player " + _playerNumber + " has taken " + damage + " damage!");
         if(_health <= 0)
         {
-            Debug.Log("DEAD");
+            GetComponent<BoatPhysics>().enabled = false;
+            GetComponentInChildren<Shooter>().enabled = false;
         }
+        _playerUI.SetHealth(Mathf.Max(_health, 0));
+    }
+
+    public void HealDamage(int gain)
+    {
+        _health = Mathf.Min(3, _health + gain);
+        _playerUI.SetHealth(Mathf.Max(_health, 0));
     }
 
 }

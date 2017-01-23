@@ -37,7 +37,7 @@ public class PlayerSelect : MonoBehaviour {
 
 	private bool m_isTriggerHeldDown = false;
 
-	float lastStep, timeBetweenSteps = 0.1f;
+	float lastStep, timeBetweenSteps = 0.2f;
 
 	void Start () {
 		//Figure out which player/child you are
@@ -108,11 +108,28 @@ public class PlayerSelect : MonoBehaviour {
 		Spawner spawner = playerSelectList.GetComponent<Spawner>();
 		GameObject spawnedBoat = spawner.Spawn();
 		Player player = spawnedBoat.GetComponent<Player>();
+        player._playerUI = this;
 		player._playerNumber = playerId;
 		//ASSIGN FLAG HERE
 		player._materialMesh.GetComponent<SkinnedMeshRenderer>().materials[1].mainTexture = 
 			playerSelectList.FlagTextures[currentFlag];
-		HealthBar.SetActive(true);
+
+        player._shotMarker.GetComponent<MeshRenderer>().materials[0].mainTexture =
+            playerSelectList.FlagTextures[currentFlag];
+        HealthBar.SetActive(true);
 		StartPrompt.SetActive(false);
 	}
+
+    public void SetHealth(int health)
+    {
+        HealthSetter hs = GetComponentInChildren<HealthSetter>();
+        for(int  i = 0; i < 3; i++)
+        {
+            hs._oranges[i].color = Color.white;
+        }
+        for (int i = 0; i < 3 - health; i++)
+        {
+            hs._oranges[i].color = Color.black;
+        }
+    }
 }
