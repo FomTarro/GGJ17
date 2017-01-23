@@ -63,7 +63,7 @@ public class Player : MonoBehaviour {
         if(_health <= 0)
         {
             GetComponent<BoatPhysics>().enabled = false;
-            GetComponentInChildren<Shooter>().enabled = false;
+            //GetComponentInChildren<Shooter>().enabled = false;
         }
         _playerUI.SetHealth(Mathf.Max(_health, 0));
     }
