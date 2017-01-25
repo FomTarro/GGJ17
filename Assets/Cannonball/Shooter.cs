@@ -27,7 +27,6 @@ public class Shooter : MonoBehaviour {
 
 	// Use this for initialization
 	void Start () {
-        _playerIndex = GetComponentInParent<Player>().PlayerIndex;
         _lineRender = GetComponent<LineRenderer>();
 		currentPoint = startPoint;
         targetSpriteRender.SetActive(false);
@@ -42,7 +41,8 @@ public class Shooter : MonoBehaviour {
 
 	// Update is called once per frame
 	void FixedUpdate () {
-		if(Input.GetAxisRaw("p" + _playerIndex + "_Trigger") != 0) {
+        _playerIndex = GetComponentInParent<Player>().PlayerIndex;
+        if (Input.GetAxisRaw("p" + _playerIndex + "_Trigger") != 0) {
 			if(!m_isTriggerHeldDown) {
 				m_isTriggerHeldDown = true;
 				shooting = true;

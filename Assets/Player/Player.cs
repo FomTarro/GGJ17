@@ -27,13 +27,12 @@ public class Player : MonoBehaviour {
 
     public void TakeDamage(int damage)
     {
-        _health = _health - damage;
+        _health = Mathf.Max(0, _health - damage);
         Debug.Log("Player " + _playerNumber + " has taken " + damage + " damage!");
         if(_health <= 0)
         {
             GetComponent<BoatPhysics>().enabled = false;
             //GetComponentInChildren<Shooter>().enabled = false;
-            GetComponent<SpawnBehavior>().Invoke("Deactivate", 2f);
         }
         _playerUI.SetHealth(Mathf.Max(_health, 0));
     }
