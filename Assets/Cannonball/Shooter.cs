@@ -73,6 +73,9 @@ public class Shooter : MonoBehaviour {
 
 	void Launch() {
 
+        Vector3 oppositeForce = new Vector3(targetSpriteRender.transform.position.x, transform.position.y, targetSpriteRender.transform.position.z);
+        oppositeForce = oppositeForce.normalized;
+        GetComponentInParent<Rigidbody>().AddForce(GetComponentInParent<Rigidbody>().mass * 10 * -oppositeForce, ForceMode.Impulse);
         GameObject newProj = Instantiate(projectile, transform.position, Quaternion.identity);
         newProj.GetComponent<ProjectileBehavior>()._fromPlayer = _playerIndex;
         Rigidbody rb = newProj.GetComponent<Rigidbody>();
@@ -104,6 +107,10 @@ public class Shooter : MonoBehaviour {
         dist += h / Mathf.Tan(a);  // correct for small height differences
                                    // calculate the velocity magnitude
         var vel = Mathf.Sqrt(dist * Physics.gravity.magnitude / Mathf.Sin(2 * a));
-        return vel * dir.normalized;
+        Debug.Log(vel);
+        if (float.IsNaN(vel))
+            return Vector3.zero;
+        else
+            return vel * dir.normalized;
     }
 }
