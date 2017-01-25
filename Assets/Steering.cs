@@ -29,7 +29,7 @@ public class Steering : MonoBehaviour {
     {
         _shadow.transform.position = new Vector3(transform.position.x, Mathf.Min(-2.5f, 0.4f*(transform.position.y + 2)), transform.position.z);
         _shadow.transform.eulerAngles = transform.eulerAngles + new Vector3(90, 0, 0);
-
+        Debug.Log(_playerIndex);
         float x = Input.GetAxis("p"+_playerIndex+"_Horizontal");
         float y = -Input.GetAxis("p" + _playerIndex + "_Vertical");
 
