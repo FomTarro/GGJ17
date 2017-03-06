@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class WaterCollisions : MonoBehaviour {
 
-    int arraySize = 4;
+    int arraySize = 8;
     public float dispersionSpeed = 1;
     public Vector4[] collisions;
     Renderer rend;

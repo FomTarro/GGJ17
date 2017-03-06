@@ -15,8 +15,11 @@ public class ProjectileBehavior : MonoBehaviour {
         }
         if (other.gameObject.tag.Equals("Ship"))
         {
-            if(other.GetComponent<Player>()._playerNumber != _fromPlayer)
+            if (other.GetComponent<Player>()._playerNumber != _fromPlayer)
+            {
                 other.GetComponent<Player>().TakeDamage(1);
+                Destroy(gameObject);
+            }
         }
 
         Destroy(gameObject, 10);
