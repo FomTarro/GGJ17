@@ -17,6 +17,8 @@ public class PlayerSelect : MonoBehaviour {
 	public Image flagBackground;
 	[SerializeField]
 	public Image playerImage;
+    [SerializeField]
+    public RespawnTimer respawnTimer;
 
 	[SerializeField]
 	public Color unselectedColor;
@@ -28,6 +30,8 @@ public class PlayerSelect : MonoBehaviour {
 
 	[SerializeField]
 	GameObject StartPrompt;
+
+    private GameObject myBoat;
 
 	private int currentFlag = 0;
 
@@ -106,8 +110,8 @@ public class PlayerSelect : MonoBehaviour {
 
 	void SpawnPlayer() {
 		Spawner spawner = playerSelectList.GetComponent<Spawner>();
-		GameObject spawnedBoat = spawner.Spawn();
-		Player player = spawnedBoat.GetComponent<Player>();
+		myBoat = spawner.Spawn();
+		Player player = myBoat.GetComponent<Player>();
         player._playerUI = this;
 		player._playerNumber = playerId;
 		//ASSIGN FLAG HERE
@@ -131,5 +135,33 @@ public class PlayerSelect : MonoBehaviour {
         {
             hs._oranges[i].color = Color.black;
         }
+
+        if(health <= 0)
+        {
+            Respawn();
+        }
+    }
+
+    public void ResetPlayer()
+    {
+        myBoat = null;
+        string color = flags[currentFlag].name.Split('_')[1];
+        playerSelectList.SelectFlag(color, playerId);
+            HealthSetter hs = GetComponentInChildren<HealthSetter>();
+        for (int i = 0; i < 3; i++)
+        {
+            hs._oranges[i].color = Color.white;
+        }
+        lockedIn = false;
+        flagBackground.gameObject.GetComponent<Outline>().enabled = false;
+        HealthBar.SetActive(false);
+        StartPrompt.SetActive(true);
+    }
+
+    public void Respawn()
+    {
+        Spawner spawner = playerSelectList.GetComponent<Spawner>();
+        spawner.ReturnToPool(myBoat);
+        respawnTimer.respawnTimerOn = true;
     }
 }
