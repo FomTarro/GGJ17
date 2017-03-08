@@ -53,7 +53,12 @@ public class Spawner : MonoBehaviour {
             if(item.GetComponent<Rigidbody>() != null)
                 item.GetComponent<Rigidbody>().velocity = Vector3.zero;
 			item.SetActive(true);
-			return item;
+            if (item.GetComponent<NavalMine>())
+                item.GetComponent<NavalMine>().PlaySurface();
+            else if (item.GetComponent<HealthKit>())
+                item.GetComponent<HealthKit>().PlaySurface();
+
+            return item;
 		}
 		return null;
 	}

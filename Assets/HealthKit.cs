@@ -4,15 +4,31 @@ using UnityEngine;
 
 public class HealthKit : MonoBehaviour {
 
-	// Use this for initialization
-	void Start () {
-		
-	}
+    [SerializeField]
+    AudioClip surfaceSound;
+
+    [SerializeField]
+    AudioClip eatenSound;
+
+    AudioSource audioSource;
+
+    // Use this for initialization
+    void Start () {
+        audioSource = GetComponent<AudioSource>();
+
+    }
 	
 	// Update is called once per frame
 	void Update () {
 		
 	}
+
+    public void PlaySurface()
+    {
+        if (audioSource == null) return;
+        audioSource.clip = surfaceSound;
+        audioSource.Play();
+    }
 
     void OnTriggerEnter(Collider other)
     {
@@ -24,6 +40,8 @@ public class HealthKit : MonoBehaviour {
             SpawnBehavior sb = GetComponent<SpawnBehavior>();
             if (sb)
             {
+                audioSource.clip = eatenSound;
+                audioSource.Play();
                 sb.Invoke("Deactivate", 0);
             }
         }

@@ -31,9 +31,10 @@ public class Steering : MonoBehaviour {
         _shadow.transform.eulerAngles = transform.eulerAngles + new Vector3(90, 0, 0);
         float x = Input.GetAxis("p"+_playerIndex+"_Horizontal");
         float y = -Input.GetAxis("p" + _playerIndex + "_Vertical");
-
+        if (System.Math.Round(x, 2) != 0 || System.Math.Round(y, 2) != 0) Restart.timer = 0;
         if (Input.GetAxisRaw("p" + _playerIndex + "_Trigger") < 0.1f)
         {
+            Restart.timer = 0;
             float angle = 0.0f;
             if (x != 0.0f || y != 0.0f)
             {

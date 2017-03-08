@@ -46,10 +46,15 @@ public class SurfaceRippler : MonoBehaviour {
                 }
 
             }
+            if(!GetComponent<AudioSource>().isPlaying)
+                GetComponent<AudioSource>().Play();
         }
         else if (other.gameObject.tag.Equals("Ship"))
         {
             _waterCollisions.ActivateImpact(new Vector3(other.transform.position.x, 0, other.transform.position.z), 0.75f);
+            if (!GetComponent<AudioSource>().isPlaying)
+                GetComponent<AudioSource>().Play();
         }
+        
     }
 }

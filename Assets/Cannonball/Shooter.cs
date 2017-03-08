@@ -8,6 +8,11 @@ public class Shooter : MonoBehaviour {
 	[SerializeField]
 	public GameObject projectile;
 
+    [SerializeField]
+    AudioClip[] shootClip;
+
+    AudioSource audioSource;
+
 	[SerializeField]
 	GameObject targetSpriteRender;
 	LineRenderer _lineRender;
@@ -30,6 +35,7 @@ public class Shooter : MonoBehaviour {
         _lineRender = GetComponent<LineRenderer>();
 		currentPoint = startPoint;
         targetSpriteRender.SetActive(false);
+        audioSource = GetComponent<AudioSource>();
     }
 	
     void LateUpdate()
@@ -43,7 +49,8 @@ public class Shooter : MonoBehaviour {
 	void FixedUpdate () {
         _playerIndex = GetComponentInParent<Player>().PlayerIndex;
         if (Input.GetAxisRaw("p" + _playerIndex + "_Trigger") != 0) {
-			if(!m_isTriggerHeldDown) {
+            Restart.timer = 0;
+            if (!m_isTriggerHeldDown) {
 				m_isTriggerHeldDown = true;
 				shooting = true;
 				targetSpriteRender.SetActive(true);
@@ -52,13 +59,15 @@ public class Shooter : MonoBehaviour {
 			
 		}
 		if (Input.GetAxisRaw("p" + _playerIndex + "_Trigger") == 0) {
-			if(m_isTriggerHeldDown)
+            Restart.timer = 0;
+            if (m_isTriggerHeldDown)
 				Launch();
 		}
 		if(shooting) {
 			float x = Input.GetAxis("p"+_playerIndex+"_Horizontal");
 			float y = Input.GetAxis("p" + _playerIndex + "_Vertical");
-			GenerateArc(y, -x);
+            if(System.Math.Round(x, 2) != 0 || System.Math.Round(y, 2) != 0) Restart.timer = 0;
+            GenerateArc(y, -x);
 		}
 	}
 
@@ -90,6 +99,8 @@ public class Shooter : MonoBehaviour {
 
         rb.velocity = CalculateTrajectory(targetSpriteRender.transform, 30f);
         _fireBurst.Play();
+        audioSource.clip = shootClip[Random.Range(0, shootClip.Length)];
+        audioSource.Play();
         m_isTriggerHeldDown = false;
 		shooting = false;
 		targetSpriteRender.SetActive(false);

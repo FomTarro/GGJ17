@@ -19,6 +19,8 @@ public class PlayerSelect : MonoBehaviour {
 	public Image playerImage;
     [SerializeField]
     public RespawnTimer respawnTimer;
+    [SerializeField]
+    public Text timeAlive;
 
 	[SerializeField]
 	public Color unselectedColor;
@@ -34,6 +36,8 @@ public class PlayerSelect : MonoBehaviour {
     private GameObject myBoat;
 
 	private int currentFlag = 0;
+
+    private float timeAliveCount = 0;
 
 	private bool lockedIn = false;
 
@@ -53,8 +57,14 @@ public class PlayerSelect : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (lockedIn && !respawnTimer.respawnTimerOn)
+        {
+            timeAliveCount += Time.deltaTime;
+            timeAlive.text = System.Math.Round(timeAliveCount, 1).ToString("F1");
+        }
 		if(!lockedIn) {
 			float vertical = Input.GetAxisRaw("p" + playerId + "_Vertical");
+            if (System.Math.Round(vertical, 2) != 0) Restart.timer = 0;
 			if(Time.time - lastStep > timeBetweenSteps){
 				lastStep = Time.time;
 				if(vertical > 0) {
@@ -75,6 +85,7 @@ public class PlayerSelect : MonoBehaviour {
 					flagBackground.color = unselectedColor;
 			}
 			if(Input.GetAxisRaw("p" + playerId + "_Trigger") != 0) {
+                Restart.timer = 0;
 				if(!m_isTriggerHeldDown) {
 					m_isTriggerHeldDown = true;
 					string color = flags[currentFlag].name.Split('_')[1];
@@ -86,7 +97,7 @@ public class PlayerSelect : MonoBehaviour {
 				}
 			}
 			if (Input.GetAxisRaw("p" + playerId + "_Trigger") == 0) {
-				if(m_isTriggerHeldDown)
+                if (m_isTriggerHeldDown)
 					m_isTriggerHeldDown = false;
 			}
 		}
@@ -122,6 +133,8 @@ public class PlayerSelect : MonoBehaviour {
             playerSelectList.FlagTextures[currentFlag];
         HealthBar.SetActive(true);
 		StartPrompt.SetActive(false);
+        timeAlive.enabled = true;
+        timeAliveCount = 0;
 	}
 
     public void SetHealth(int health)
@@ -156,6 +169,8 @@ public class PlayerSelect : MonoBehaviour {
         flagBackground.gameObject.GetComponent<Outline>().enabled = false;
         HealthBar.SetActive(false);
         StartPrompt.SetActive(true);
+        timeAlive.enabled = false;
+        timeAliveCount = 0;
     }
 
     public void Respawn()
@@ -163,5 +178,17 @@ public class PlayerSelect : MonoBehaviour {
         Spawner spawner = playerSelectList.GetComponent<Spawner>();
         spawner.ReturnToPool(myBoat);
         respawnTimer.respawnTimerOn = true;
+        StartCoroutine(FlashText());
+    }
+
+    IEnumerator FlashText()
+    {
+        while (respawnTimer.respawnTimerOn)
+        {
+            timeAlive.enabled = false;
+            yield return new WaitForSeconds(0.60f);
+            timeAlive.enabled = true;
+            yield return new WaitForSeconds(0.60f);
+        }
     }
 }
