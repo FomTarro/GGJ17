@@ -51,13 +51,14 @@ public class NavalMine : MonoBehaviour {
 
     public void PlaySurface()
     {
-        surfaceSound.Play(2);
+        surfaceSound.PlayDelayed(2);
     }
 
     void OnTriggerEnter(Collider other)
     {
         if (other.GetComponent<Rigidbody>() != null)
         {
+            explosionSound.Play();
             _waterCollisions.ActivateImpact(new Vector3(other.transform.position.x, 0, transform.position.z), 2f);
             GameObject explosion = Instantiate(_explosionParticles);
             explosion.transform.position = transform.position;
@@ -73,23 +74,26 @@ public class NavalMine : MonoBehaviour {
             {
                 if (c.gameObject.tag.Equals("Ship"))
                 {
+                    explosionSound.Play();
                     other.GetComponent<Player>().TakeDamage(1);
                     c.GetComponent<Rigidbody>().AddExplosionForce(65000, other.transform.position, 13f, 1f, ForceMode.Impulse);
 
                 }
                 else if (c.gameObject.tag.Equals("Mine"))
                 {
+                    explosionSound.Play();
                     c.GetComponent<Rigidbody>().AddExplosionForce(10000, other.transform.position, 10f, 1f, ForceMode.Impulse);
                     
                 }
             }
             if (other.tag.Equals("Ship") && other.GetComponent<Player>() != null)
             {
+                explosionSound.Play();
                 other.GetComponent<Player>().TakeDamage(1);
             }
             
             Debug.Log("BOOM!");
-            explosionSound.Play();
+            
             this.GetComponent<Collider>().enabled = false;
             this.GetComponentInChildren<SkinnedMeshRenderer>().enabled = false;
             //Destroy(this.gameObject, 1);
@@ -104,11 +108,11 @@ public class NavalMine : MonoBehaviour {
 
     void Explode()
     {
-        
         _waterCollisions.ActivateImpact(new Vector3(transform.position.x, 0, transform.position.z), 2f);
         GameObject explosion = Instantiate(_explosionParticles);
         explosion.transform.position = transform.position;
         explosion.transform.localScale = Vector3.one * 2;
+        explosionSound.Play();
         foreach (ParticleSystem ps in explosion.GetComponentsInChildren<ParticleSystem>())
         {
             ps.Play();
@@ -121,12 +125,12 @@ public class NavalMine : MonoBehaviour {
             {
                 c.GetComponent<Player>().TakeDamage(1);
                 c.GetComponent<Rigidbody>().AddExplosionForce(65000, transform.position, 13f, 1f, ForceMode.Impulse);
-
+                explosionSound.Play();
             }
             else if (c.gameObject.tag.Equals("Mine"))
             {
                 c.GetComponent<Rigidbody>().AddExplosionForce(10000, transform.position, 10f, 1f, ForceMode.Impulse);
-
+                explosionSound.Play();
             }
         }
         Debug.Log("Timer went off!! BOOM!");

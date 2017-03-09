@@ -37,6 +37,10 @@ public class Player : MonoBehaviour {
         _playerUI.SetHealth(Mathf.Max(_health, 0));
     }
 
+    public void ResetHealth() {
+        _health = 3;
+    }
+
     public void HealDamage(int gain)
     {
         _health = Mathf.Min(3, _health + gain);

@@ -128,7 +128,7 @@ public class PlayerSelect : MonoBehaviour {
 		//ASSIGN FLAG HERE
 		player._materialMesh.GetComponent<SkinnedMeshRenderer>().materials[1].mainTexture = 
 			playerSelectList.FlagTextures[currentFlag];
-
+		player.ResetHealth();
         player._shotMarker.GetComponent<MeshRenderer>().materials[0].mainTexture =
             playerSelectList.FlagTextures[currentFlag];
         HealthBar.SetActive(true);
