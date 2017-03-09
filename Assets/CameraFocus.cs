@@ -10,6 +10,8 @@ public class CameraFocus : MonoBehaviour {
 
     public float _verticalZoomFactor = 1.5f;
 
+    float _zoomFactor;
+
     public GameObject _centerBob;
 
     private static List<CameraTracker> _trackedObjects = new List<CameraTracker>();
@@ -17,6 +19,7 @@ public class CameraFocus : MonoBehaviour {
     {
         get { return _trackedObjects; }
     }
+
 
 	// Use this for initialization
 	void Awake () {
@@ -53,13 +56,29 @@ public class CameraFocus : MonoBehaviour {
         float maxZ = zPositions[zPositions.Count - 1];
 
 
-        Vector3 minPos = new Vector3(minX, minY, minZ);
-        Vector3 maxPos = new Vector3(maxX, maxY, maxZ);
-        Vector3 centerPos = (minPos + maxPos) / 2;
+        Vector3 minPos = new Vector3(minX, minY, 0);
+        Vector3 maxPos = new Vector3(maxX, maxY, 0);
+
+        float xCenter = minX + (Mathf.Abs(maxX - minX) / 2F);
+        float yCenter = minY + (Mathf.Abs(maxY - minY) / 2F);
+        Vector3 centerPos = new Vector3(xCenter, yCenter, 0);
+        Debug.Log(centerPos);
 
         _centerBob.transform.position = centerPos;
 
+        float heightX = -Mathf.Abs(90F / _camera.fieldOfView * maxX - xCenter * 2F);
+        float heightY = -Mathf.Abs(90F / _camera.fieldOfView * maxY - yCenter * 2F);
+        //Debug.Log(heightX + " : " + heightY);
 
+        Vector3 unSmoothCameraPosition = new Vector3(centerPos.x, centerPos.y, Mathf.Min(heightX, heightY));
+
+        _camera.transform.position = Vector3.Lerp(_camera.transform.position, unSmoothCameraPosition + new Vector3(0, 0, _initialZOffset), Time.deltaTime);
+
+    }
+
+    public void ZoomMethod1(Vector3 centerPos)
+    {
+        
         // get cross products along each axis to produce a purpendicular vector
         List<float> zoomPositions = new List<float>();
         Vector3 zoomLeft = Vector3.Cross(centerPos, Vector3.left);
@@ -82,10 +101,28 @@ public class CameraFocus : MonoBehaviour {
 
         zoomPositions.Sort((z1, z2) => z1.CompareTo(z2));
         Debug.Log(zoomPositions[0] + " : " + zoomPositions[zoomPositions.Count - 1]);
+    }
 
-        // add the most negative one to the z-axis
-        _camera.transform.position = centerPos + (new Vector3(0, 0, 2*zoomPositions[0] + _initialZOffset));
+    public void ZoomeMethod2()
+    {
+        Plane[] frustrum = GeometryUtility.CalculateFrustumPlanes(_camera);
 
+        bool contained = true;
+
+        foreach (CameraTracker target in _trackedObjects)
+        {
+            contained = contained && GeometryUtility.TestPlanesAABB(frustrum, target.GetComponent<Collider>().bounds);
+        }
+        if (contained)
+        {
+            _zoomFactor = _zoomFactor + 0.25f;
+            Debug.Log("ZOOM IN");
+        }
+        else if (!contained)
+        {
+            _zoomFactor = _zoomFactor - 0.25f;
+            Debug.Log("ZOOM OUT");
+        }
     }
 
 }
